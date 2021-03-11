@@ -11,6 +11,7 @@
 		066F3C4525F967130007600B /* TopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066F3C4425F967130007600B /* TopView.swift */; };
 		066F3C4725F967140007600B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 066F3C4625F967140007600B /* Assets.xcassets */; };
 		066F3C4A25F967140007600B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 066F3C4925F967140007600B /* Preview Assets.xcassets */; };
+		068C2B7E25FABAB20086B0E7 /* AppDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068C2B7D25FABAB20086B0E7 /* AppDataStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +21,7 @@
 		066F3C4625F967140007600B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		066F3C4925F967140007600B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		066F3C4B25F967140007600B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		068C2B7D25FABAB20086B0E7 /* AppDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,7 @@
 			children = (
 				066F3C4225F967130007600B /* UpdateListDetailsApp.swift */,
 				066F3C4425F967130007600B /* TopView.swift */,
+				068C2B7D25FABAB20086B0E7 /* AppDataStore.swift */,
 				066F3C4625F967140007600B /* Assets.xcassets */,
 				066F3C4B25F967140007600B /* Info.plist */,
 				066F3C4825F967140007600B /* Preview Content */,
@@ -140,6 +143,7 @@
 			files = (
 				066F3C4525F967130007600B /* TopView.swift in Sources */,
 				066F3C4325F967130007600B /* UpdateListDetailsApp.swift in Sources */,
+				068C2B7E25FABAB20086B0E7 /* AppDataStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

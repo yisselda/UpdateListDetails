@@ -14,21 +14,20 @@ struct TopView: View {
   var body: some View {
     NavigationView {
       VStack {
-        List(store.items) { item in
-          NavigationLink(
-            destination: DetailView(store: store, itemId: item.id),
-            label: {
-              Text(item.name)
-            })
+        List {
+          ForEach(store.items) { item in
+            NavigationLink(
+              destination: DetailView(store: store, itemId: item.id),
+              label: {
+                VStack(alignment: .leading) {
+                  Text(item.name).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                  Text("\(item.subItems.count) subitems ")
+                }
+              })
+          }
         }
       }
     }
-  }
-}
-
-struct TopView_Previews: PreviewProvider {
-  static var previews: some View {
-    TopView()
   }
 }
 
@@ -39,16 +38,19 @@ struct DetailView: View {
   var body: some View {
     let item = Binding<MyItem>(
       get: {
-        store.items[store.items.firstIndex(where: { $0.id == self.itemId})!]
+        store.getItem(itemId)
       },
       set: {
-        store.updateItem(itemId: itemId, with: $0)
+        store.updateItem(itemId, with: $0)
       }
     )
 
     return VStack {
-      Text(item.name.wrappedValue)
+      Text("Name: \(item.name.wrappedValue)")
+      Divider()
       TextField("New Item Name", text: item.name)
+        .padding(.horizontal, 60)
+      Divider()
       List(item.subItems.wrappedValue) { sub in
         NavigationLink(
           destination: SubDetailView(store: store, itemId: itemId, subItemId: sub.id),
@@ -56,7 +58,7 @@ struct DetailView: View {
             Text(sub.name)
           })
       }
-    }.padding(.horizontal, 60)
+    }
   }
 }
 
@@ -76,52 +78,11 @@ struct SubDetailView: View {
     )
 
     return VStack {
-      Text(subItem.name.wrappedValue)
+      Text("Name: \(subItem.name.wrappedValue)")
+      Divider()
       TextField("New Subitem Name", text: subItem.name)
-    }.padding(.horizontal, 60)
-  }
-}
-
-
-class AppDataStore: ObservableObject {
-  @Published var items = [MyItem]()
-
-  init() {
-    items = [
-      MyItem(name: "First"),
-      MyItem(name: "2nd"),
-      MyItem(name: "And another item")
-    ]
-  }
-
-  func updateName(of item: MyItem, newName: String) {
-    objectWillChange.send()
-    item.name = newName
-  }
-
-  func updateItem(itemId: UUID, with newItem: MyItem) {
-    objectWillChange.send()
-    if let i = items.firstIndex(where: { $0.id == itemId}) {
-      items[i] = newItem
-    }
-  }
-
-  func getSubItem(itemId: UUID, subItemId: UUID) -> MySubItem? {
-    if let i = items.firstIndex(where: { $0.id == itemId}) {
-      if let s = items[i].subItems.firstIndex(where: { $0.id == subItemId}) {
-        return items[i].subItems[s]
-      }
-    }
-
-    return nil
-  }
-
-  func updateSubItem(itemId: UUID, subItemId: UUID, with newItem: MySubItem) {
-    objectWillChange.send()
-    if let i = items.firstIndex(where: { $0.id == itemId}) {
-      if let s = items[i].subItems.firstIndex(where: { $0.id == subItemId}) {
-        items[i].subItems[s] = newItem
-      }
+        .padding(.horizontal, 60)
+      Divider()
     }
   }
 }
@@ -144,4 +105,17 @@ class MyItem: ObservableObject, Identifiable {
 struct MySubItem: Identifiable {
   var id = UUID()
   var name: String
+}
+
+
+
+struct Layers_Previews: PreviewProvider {
+  static var store = AppDataStore()
+  static var previews: some View {
+    TopView()
+    NavigationView {
+      DetailView(store: store, itemId: store.items.first!.id)
+    }
+    SubDetailView(store: store, itemId: store.items.first!.id, subItemId: store.items.first!.subItems.first!.id)
+  }
 }
