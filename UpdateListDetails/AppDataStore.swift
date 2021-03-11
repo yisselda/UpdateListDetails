@@ -52,4 +52,22 @@ class AppDataStore: ObservableObject {
       }
     }
   }
+
+  func delete(at indexSet: IndexSet) {
+    for index in indexSet {
+      items.remove(at: index)
+    }
+  }
+
+  func move(indices: IndexSet, newOffset: Int) {
+    items.move(fromOffsets: indices, toOffset: newOffset)
+  }
+
+  func deleteSubItem(itemId: UUID, at indexSet: IndexSet) {
+    if let i = items.firstIndex(where: { $0.id == itemId}) {
+      for index in indexSet {
+        items[i].subItems.remove(at: index)
+      }
+    }
+  }
 }

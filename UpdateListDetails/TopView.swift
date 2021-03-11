@@ -25,6 +25,14 @@ struct TopView: View {
                 }
               })
           }
+          .onDelete(perform: { indexSet in
+            store.delete(at: indexSet)
+          })
+          .onMove(perform: { indices, newOffset in
+            store.move(indices: indices, newOffset: newOffset)
+          })
+        }.toolbar {
+          EditButton()
         }
       }
     }
@@ -51,12 +59,17 @@ struct DetailView: View {
       TextField("New Item Name", text: item.name)
         .padding(.horizontal, 60)
       Divider()
-      List(item.subItems.wrappedValue) { sub in
-        NavigationLink(
-          destination: SubDetailView(store: store, itemId: itemId, subItemId: sub.id),
-          label: {
-            Text(sub.name)
-          })
+      List {
+        ForEach(item.subItems.wrappedValue) { sub in
+          NavigationLink(
+            destination: SubDetailView(store: store, itemId: itemId, subItemId: sub.id),
+            label: {
+              Text(sub.name)
+            })
+        }
+        .onDelete(perform: { indexSet in
+          store.deleteSubItem(itemId: itemId, at: indexSet)
+        })
       }
     }
   }
