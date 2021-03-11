@@ -36,30 +36,48 @@ struct DetailView: View {
   @ObservedObject var store: AppDataStore
   var itemId: UUID
 
-  var item: MyItem {
-    store.items[store.items.firstIndex(where: { $0.id == itemId})!]
-  }
-
   var body: some View {
-    VStack {
-      Text(item.name)
-//      TextField("New Item Name", text: $item.name)
-      List(item.subItems) { sub in
-//        NavigationLink(
-//          destination: SubDetailView(item: $item.subItems[item.subItems.firstIndex(where: { $0.id == sub.id})!] ),
-//          label: {
+    let item = Binding<MyItem>(
+      get: {
+        store.items[store.items.firstIndex(where: { $0.id == self.itemId})!]
+      },
+      set: {
+        store.updateItem(itemId: itemId, with: $0)
+      }
+    )
+
+    return VStack {
+      Text(item.name.wrappedValue)
+      TextField("New Item Name", text: item.name)
+      List(item.subItems.wrappedValue) { sub in
+        NavigationLink(
+          destination: SubDetailView(store: store, itemId: itemId, subItemId: sub.id),
+          label: {
             Text(sub.name)
-//          })
+          })
       }
     }.padding(.horizontal, 60)
   }
 }
 
 struct SubDetailView: View {
-  @Binding var item: MySubItem
+  @ObservedObject var store: AppDataStore
+  var itemId: UUID
+  var subItemId: UUID
+
   var body: some View {
-    VStack {
-      TextField("New Item Name", text: $item.name)
+    let subItem = Binding<MySubItem>(
+      get: {
+        store.getSubItem(itemId: itemId, subItemId: subItemId)!
+      },
+      set: {
+        store.updateSubItem(itemId: itemId, subItemId: subItemId, with: $0)
+      }
+    )
+
+    return VStack {
+      Text(subItem.name.wrappedValue)
+      TextField("New Subitem Name", text: subItem.name)
     }.padding(.horizontal, 60)
   }
 }
@@ -79,6 +97,32 @@ class AppDataStore: ObservableObject {
   func updateName(of item: MyItem, newName: String) {
     objectWillChange.send()
     item.name = newName
+  }
+
+  func updateItem(itemId: UUID, with newItem: MyItem) {
+    objectWillChange.send()
+    if let i = items.firstIndex(where: { $0.id == itemId}) {
+      items[i] = newItem
+    }
+  }
+
+  func getSubItem(itemId: UUID, subItemId: UUID) -> MySubItem? {
+    if let i = items.firstIndex(where: { $0.id == itemId}) {
+      if let s = items[i].subItems.firstIndex(where: { $0.id == subItemId}) {
+        return items[i].subItems[s]
+      }
+    }
+
+    return nil
+  }
+
+  func updateSubItem(itemId: UUID, subItemId: UUID, with newItem: MySubItem) {
+    objectWillChange.send()
+    if let i = items.firstIndex(where: { $0.id == itemId}) {
+      if let s = items[i].subItems.firstIndex(where: { $0.id == subItemId}) {
+        items[i].subItems[s] = newItem
+      }
+    }
   }
 }
 
