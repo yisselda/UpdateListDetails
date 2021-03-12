@@ -64,6 +64,7 @@ class AppDataStore: ObservableObject {
   }
 
   func deleteSubItem(itemId: UUID, at indexSet: IndexSet) {
+    objectWillChange.send()
     if let i = items.firstIndex(where: { $0.id == itemId}) {
       for index in indexSet {
         items[i].subItems.remove(at: index)
