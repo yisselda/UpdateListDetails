@@ -27,8 +27,14 @@ struct DetailView: View {
             destination: SubDetailView(store: store, itemId: item.id, subItem: sub),
             label: {
               Text(sub.name)
+              ZStack {
+                Circle().fill(Color.orange)
+                Image(systemName: sub.isPlaying ? "pause.fill" : "play.fill")
+                  .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+                  .padding(.all, 8)
+              }
             })
-        }
+          }
         .onDelete(perform: { indexSet in
           store.deleteSubItem(itemId: item.id, at: indexSet)
         })

@@ -10,4 +10,5 @@ import Foundation
 struct MySubItem: Identifiable {
   var id = UUID()
   var name: String
+  var isPlaying: Bool = false
 }

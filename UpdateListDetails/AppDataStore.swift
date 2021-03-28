@@ -9,6 +9,7 @@ import Foundation
 
 class AppDataStore: ObservableObject {
   @Published var items = [MyItem]()
+  private var currentlyPlaying: (UUID, MySubItem)? = nil
 
   init() {
     items = [
@@ -58,6 +59,29 @@ class AppDataStore: ObservableObject {
     if let i = items.firstIndex(where: { $0.id == itemId}) {
       if let s = items[i].subItems.firstIndex(where: { $0.id == subItem.id}) {
         items[i].subItems[s].name = name
+      }
+    }
+  }
+
+  func toggleSubItem(for subItem: MySubItem, itemId: UUID) {
+    objectWillChange.send()
+    if currentlyPlaying != nil {
+      let (currentItemId, currentSubItem) = currentlyPlaying!
+      if currentSubItem.id != subItem.id {
+        if let i = items.firstIndex(where: { $0.id == currentItemId}) {
+          if let s = items[i].subItems.firstIndex(where: { $0.id == currentSubItem.id}) {
+            items[i].subItems[s].isPlaying = false
+          }
+        }
+      }
+    }
+
+    if let i = items.firstIndex(where: { $0.id == itemId}) {
+      if let s = items[i].subItems.firstIndex(where: { $0.id == subItem.id}) {
+        items[i].subItems[s].isPlaying.toggle()
+        if items[i].subItems[s].isPlaying {
+          currentlyPlaying = (itemId, subItem)
+        }
       }
     }
   }

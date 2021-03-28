@@ -12,18 +12,38 @@ struct SubDetailView: View {
   var itemId: UUID
   var subItem: MySubItem
   @State private var textFieldContents = ""
+  @State private var isPlaying = false
 
   var body: some View {
-    Form {
-      TextField("Name", text: $textFieldContents, onEditingChanged: { _ in
-        self.store.updateName(for: self.subItem, itemId: itemId, to: self.textFieldContents)
-      })
+    VStack {
+      Form {
+        TextField("Name", text: $textFieldContents, onEditingChanged: { _ in
+          store.updateName(for: subItem, itemId: itemId, to: textFieldContents)
+        })
+      }
+      .onAppear(perform: loadItemText)
+
+      ZStack {
+        Circle().fill(Color.orange)
+        Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+          .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+          .padding(.all, 8)
+      }
+      .frame(width: 44, height: 44, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+      .onAppear(perform: loadPlayState)
+      .onTapGesture {
+        store.toggleSubItem(for: subItem, itemId: itemId)
+        isPlaying.toggle()
+      }
     }
-    .onAppear(perform: loadItemText)
   }
 
   func loadItemText() {
     textFieldContents = subItem.name
+  }
+
+  func loadPlayState() {
+    isPlaying = subItem.isPlaying
   }
 }
 
