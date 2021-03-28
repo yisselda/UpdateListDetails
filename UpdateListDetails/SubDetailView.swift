@@ -10,31 +10,26 @@ import SwiftUI
 struct SubDetailView: View {
   @ObservedObject var store: AppDataStore
   var itemId: UUID
-  var subItemId: UUID
+  var subItem: MySubItem
+  @State private var textFieldContents = ""
 
   var body: some View {
-    let subItem = Binding<MySubItem>(
-      get: {
-        store.getSubItem(itemId: itemId, subItemId: subItemId)!
-      },
-      set: {
-        store.updateSubItem(itemId: itemId, subItemId: subItemId, with: $0)
-      }
-    )
-
-    return VStack {
-      Text("Name: \(subItem.name.wrappedValue)")
-      Divider()
-      TextField("New Subitem Name", text: subItem.name)
-        .padding(.horizontal, 60)
-      Divider()
+    Form {
+      TextField("Name", text: $textFieldContents, onEditingChanged: { _ in
+        self.store.updateName(for: self.subItem, itemId: itemId, to: self.textFieldContents)
+      })
     }
+    .onAppear(perform: loadItemText)
+  }
+
+  func loadItemText() {
+    textFieldContents = subItem.name
   }
 }
 
 struct SubDetailView_Previews: PreviewProvider {
   static var store = AppDataStore()
   static var previews: some View {
-    SubDetailView(store: store, itemId: store.items.first!.id, subItemId: store.items.first!.subItems.first!.id)
+    SubDetailView(store: store, itemId: store.items.first!.id, subItem: store.items.first!.subItems.first!)
   }
 }

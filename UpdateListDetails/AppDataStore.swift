@@ -53,13 +53,31 @@ class AppDataStore: ObservableObject {
     }
   }
 
+  func updateName(for subItem: MySubItem, itemId: UUID, to name: String) {
+    objectWillChange.send()
+    if let i = items.firstIndex(where: { $0.id == itemId}) {
+      if let s = items[i].subItems.firstIndex(where: { $0.id == subItem.id}) {
+        items[i].subItems[s].name = name
+      }
+    }
+  }
+
+  func updateName(for item: MyItem, to name: String) {
+    objectWillChange.send()
+    if let i = items.firstIndex(where: { $0.id == item.id}) {
+      items[i].name = name
+    }
+  }
+
   func delete(at indexSet: IndexSet) {
+    objectWillChange.send()
     for index in indexSet {
       items.remove(at: index)
     }
   }
 
   func move(indices: IndexSet, newOffset: Int) {
+    objectWillChange.send()
     items.move(fromOffsets: indices, toOffset: newOffset)
   }
 
@@ -69,6 +87,13 @@ class AppDataStore: ObservableObject {
       for index in indexSet {
         items[i].subItems.remove(at: index)
       }
+    }
+  }
+
+  func moveSubItem(itemId: UUID, indices: IndexSet, newOffset: Int) {
+    objectWillChange.send()
+    if let i = items.firstIndex(where: { $0.id == itemId}) {
+      items[i].subItems.move(fromOffsets: indices, toOffset: newOffset)
     }
   }
 }

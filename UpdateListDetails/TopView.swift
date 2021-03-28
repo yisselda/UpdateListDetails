@@ -17,7 +17,7 @@ struct TopView: View {
         List {
           ForEach(store.items) { item in
             NavigationLink(
-              destination: DetailView(store: store, itemId: item.id),
+              destination: DetailView(store: store, item: item),
               label: {
                 VStack(alignment: .leading) {
                   Text(item.name).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
