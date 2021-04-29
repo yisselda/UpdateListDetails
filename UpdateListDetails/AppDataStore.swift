@@ -28,6 +28,11 @@ class AppDataStore: ObservableObject {
     return items[items.firstIndex(where: { $0.id == itemId})!]
   }
 
+  func addItem() {
+    objectWillChange.send()
+    items.append(MyItem(name: "new item \(items.count + 1)"))
+  }
+
   func updateItem(_ itemId: UUID, with newItem: MyItem) {
     objectWillChange.send()
     if let i = items.firstIndex(where: { $0.id == itemId}) {
@@ -51,6 +56,13 @@ class AppDataStore: ObservableObject {
       if let s = items[i].subItems.firstIndex(where: { $0.id == subItemId}) {
         items[i].subItems[s] = newItem
       }
+    }
+  }
+
+  func addSubItem(itemId: UUID) {
+    objectWillChange.send()
+    if let i = items.firstIndex(where: { $0.id == itemId}) {
+        items[i].subItems.append(MySubItem(name: "new sub \(items[i].subItems.count + 1)"))
     }
   }
 

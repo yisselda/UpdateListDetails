@@ -34,6 +34,8 @@ struct TopView: View {
         }.toolbar {
           EditButton()
         }
+
+        Button("Add Item", action: store.addItem)
       }
     }
   }
