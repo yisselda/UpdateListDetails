@@ -13,7 +13,7 @@ struct DetailView: View {
   @State private var textFieldContents = ""
 
   var body: some View {
-    return VStack {
+    VStack {
       Form {
         TextField("Name", text: $textFieldContents, onEditingChanged: { _ in
           self.store.updateName(for: item, to: self.textFieldContents)
@@ -26,18 +26,23 @@ struct DetailView: View {
           NavigationLink(
             destination: SubDetailView(store: store, itemId: item.id, subItem: sub),
             label: {
-              Text(sub.name).multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
-              ZStack {
-                Circle().fill(sub.isPlaying ? Color.orange : Color.red)
-                Image(systemName: sub.isPlaying ? "pause.fill" : "play.fill")
-                  .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                  .frame(width: 44, height: 44, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                  .onTapGesture {
-                    store.toggleSubItem(for: sub, itemId: item.id)
-                  }
+              HStack {
+                Text(sub.name)
+                Spacer()
+                ZStack {
+                  Circle().fill(Color.yellow)
+                  Image(systemName: sub.isPlaying ? "pause.fill" : "play.fill")
+                    .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+                    .padding(.all, 8)
+                }
+                .frame(width: 44, height: 44, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                .onTapGesture {
+                  store.toggleSubItem(for: sub, itemId: item.id)
+                }
               }
-            })
-          }
+            }
+          )
+        }
         .onDelete(perform: { indexSet in
           store.deleteSubItem(itemId: item.id, at: indexSet)
         })
